@@ -10,30 +10,102 @@ import static org.junit.Assert.*;
 
 public class WinnerControllerTest {
     @Test
-    public void getWinner() throws Exception {
-        final int FIELD_SIZE = 4;
-        final Field field = new Field(FIELD_SIZE);
-        Point p1 = new Point(0, 0);
-        Point p2 = new Point(1, 0);
-        Point p3 = new Point(2, 0);
-
-        field.setFigure(p1, Figure.X);
-        field.setFigure(p2, Figure.X);
-        field.setFigure(p3, Figure.X);
-
-
-        WinnerController winnerController = new WinnerController();
-        Figure winner = winnerController.getWinner(field);
-
-
-        assertEquals(Figure.X, winner);
-
-
+    public void testGetWinnerWhenWinnerRow() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        for (int i = 0; i < 3; i++) {
+            final Field field = new Field(3);
+            field.setFigure(new Point(i, 0), Figure.X);
+            field.setFigure(new Point(i, 1), Figure.X);
+            field.setFigure(new Point(i, 2), Figure.X);
+            assertEquals(Figure.X, winnerController.getWinner(field));
+        }
     }
 
     @Test
-    public void check() throws Exception {
+    public void testGetWinnerWhenWinnerColumn() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        for (int i = 0; i < 3; i++) {
+            final Field field = new Field(3);
+            field.setFigure(new Point(0, i), Figure.X);
+            field.setFigure(new Point(1, i), Figure.X);
+            field.setFigure(new Point(2, i), Figure.X);
+            assertEquals(Figure.X, winnerController.getWinner(field));
+        }
+    }
+
+
+    @Test
+    public void testGetWinnerNoWinner() throws Exception {
+        final int FIELD_SIZE = 3;
+        final Field field = new Field(FIELD_SIZE);
+        WinnerController winnerController = new WinnerController();
+
+        for (int i = 0; i < 3; i++ ){
+            field.setFigure(new Point(0, 0),Figure.X);
+            field.setFigure(new Point(1, 0), Figure.X);
+            field.setFigure(new Point(2, 0), Figure.O);
+            assertNull(winnerController.getWinner(field));
+        }
 
     }
+
+
+
+
+
+
+    @Test
+    public void testGetWinnerWhenNoWinnerColumn() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        for (int i = 0; i < 3; i++) {
+            final Field field = new Field(3);
+            field.setFigure(new Point(0, i), Figure.X);
+            field.setFigure(new Point(1, i), Figure.X);
+            field.setFigure(new Point(2, i), Figure.O);
+            assertNull(winnerController.getWinner(field));
+        }
+    }
+
+    @Test
+    public void testGetWinnerWhenWinnerDiag1() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        final Field field = new Field(3);
+        field.setFigure(new Point(0, 0), Figure.X);
+        field.setFigure(new Point(1, 1), Figure.X);
+        field.setFigure(new Point(2, 2), Figure.X);
+        assertEquals(Figure.X, winnerController.getWinner(field));
+    }
+
+    @Test
+    public void testGetWinnerWhenNoWinnerDiag1() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        final Field field = new Field(3);
+        field.setFigure(new Point(0, 0), Figure.X);
+        field.setFigure(new Point(1, 1), Figure.X);
+        field.setFigure(new Point(2, 2), Figure.O);
+        assertNull(winnerController.getWinner(field));
+    }
+
+    @Test
+    public void testGetWinnerWhenWinnerDiag2() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        final Field field = new Field(3);
+        field.setFigure(new Point(0, 2), Figure.X);
+        field.setFigure(new Point(1, 1), Figure.X);
+        field.setFigure(new Point(2, 0), Figure.X);
+        assertEquals(Figure.X, winnerController.getWinner(field));
+    }
+
+    @Test
+    public void testGetWinnerWhenNoWinnerDiag2() throws Exception {
+        final WinnerController winnerController = new WinnerController();
+        final Field field = new Field(3);
+        field.setFigure(new Point(0, 2), Figure.X);
+        field.setFigure(new Point(1, 1), Figure.X);
+        field.setFigure(new Point(2, 0), Figure.O);
+        assertNull(winnerController.getWinner(field));
+    }
+
+
 
 }
