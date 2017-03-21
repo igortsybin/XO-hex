@@ -4,9 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by igorts on 16.03.2017.
- */
+
 public class PlayerTest {
     @Test
     public void getName() throws Exception {

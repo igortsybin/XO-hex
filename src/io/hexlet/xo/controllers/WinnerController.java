@@ -11,58 +11,44 @@ public class WinnerController {
 
     public Figure getWinner (final Field field) throws InvalidPointException {
         try {
-            //vertical
+
+
+//            for (int i = 0; i < 3; i++) {
+//                if (check(field, new Point(i, 0), p -> new Point(p.x, p.y + 1))) { //p - argument, after - the body
+//                    return field.getFigure(new Point(i, 0));
+//                }
+//            }
             for (int i = 0; i < 3; i++) {
-                if (check(field, new Point(i, 0), new IChangeTheRule() {
+                if (check(field, new Point(i, 0), new IPointGenerator() {
                     @Override
-                    public Point change(Point p) {
+                    public Point next(Point p) {
                         return new Point(p.x, p.y + 1);
                     }
                 })) {
                     return field.getFigure(new Point(i, 0));
                 }
             }
-
-            //alternative realisation
-
-            for (int i = 0; i < 3; i++) {
-                if (check(field, new Point(i, 0), p -> new Point(p.x + 1, p.y))) {
-                    return field.getFigure(new Point(i, 0));
-                }
-            }
-
 
             //horizontal
+
             for (int i = 0; i < 3; i++) {
-                if (check(field, new Point(i, 0), new IChangeTheRule() {
-                    @Override
-                    public Point change(Point p) {
-                        return new Point(p.x, p.y + 1);
-                    }
-                })) {
-                    return field.getFigure(new Point(i, 0));
+                if (check(field, new Point(0, i), p -> new Point(p.x + 1 , p.y))) { //p - argument, after - the body
+                    return field.getFigure(new Point(0, i));
                 }
             }
 
-            if (check(field, new Point(0, 0), new IChangeTheRule() {
-                @Override
-                public Point change(Point p) {
-                    return new Point(p.x + 1, p.y + 1);
-                }
-            })) {
+
+            //diagonal first side
+            if (check(field, new Point(0, 0), p -> new Point(p.x + 1, p.y + 1))){
+
                 return field.getFigure(new Point(0, 0));
             }
 
 
             //diagonal second side
-            if (check(field, new Point(0, 2), new IChangeTheRule() {
-                @Override
-                public Point change(Point p) {
-                    return new Point(p.x, p.y - 1);
-                }
-            })) {
-                return field.getFigure(new Point(0, 2));
-            }
+            if (check(field, new Point(0, 2), p -> new Point(p.x + 1, p.y - 1)))
+                return field.getFigure(new Point(1, 1));
+
 
 
         }   catch (InvalidPointException e) {
@@ -71,26 +57,67 @@ public class WinnerController {
         return null;
     }
 
-    public boolean check(final Field field, Point startPoint, IChangeTheRule changeTheRule) throws InvalidPointException {
+//    public boolean check(final Field field,
+//                         Point currentPoint,
+//                         IChangeTheRule changeTheRule) throws InvalidPointException {
+//
+//
+//
+//
+//        try {
+//
+//            final Point p1 = currentPoint;
+//            final Point p2 = changeTheRule.change(p1);
+//            final Point p3 = changeTheRule.change(p2);
+//
+//
+//            if (field.getFigure(p1) == null) {
+//                return false;
+//            } else
+//                return (field.getFigure(p1) == field.getFigure(p2) && field.getFigure(p1)== field.getFigure(p3));
+//        } catch (InvalidPointException e) {e.printStackTrace();}
+//        return false;
+//    }
+
+    private boolean check(final Field field,
+                          final Point currentPoint,
+                          final IPointGenerator pointGenerator) {
+        final Figure currentFigure;
+        final Figure nextFigure;
+        final Point nextPoint = pointGenerator.next(currentPoint);
         try {
+            currentFigure = field.getFigure(currentPoint);
 
-            final Point p1 = startPoint;
-            final Point p2 = changeTheRule.change(p1);
-            final Point p3 = changeTheRule.change(p2);
+            if (currentFigure == null)
+                return false;
 
+            nextFigure = field.getFigure(nextPoint);
+        } catch (final InvalidPointException e) {
+            return true;
+        }
 
-            if (field.getFigure(p1) == null) {
+        if (currentFigure != nextFigure)
+            return false;
 
-            }
-               return (field.getFigure(p1) == field.getFigure(p2) && field.getFigure(p1)== field.getFigure(p3));
-        } catch (InvalidPointException e) {e.printStackTrace();}
-        return false;
+        return check(field, nextPoint, pointGenerator);
     }
 
-    private interface IChangeTheRule  {
-        Point change (final Point p);
+    private interface IPointGenerator  {
+        Point next (final Point p);
     }
 
 
 
 }
+
+
+//            for (int i = 0; i < 3; i++) {
+//                if (check(field, new Point(i, 0), new IPointGenerator() {
+//                    @Override
+//                    public Point change(Point p) {
+//                        return new Point(p.x, p.y + 1);
+//                    }
+//                })) {
+//                    return field.getFigure(new Point(i, 0));
+//                }
+//            }
